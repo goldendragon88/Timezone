@@ -1,50 +1,40 @@
-(function () {
-  'use strict';
+'use strict';
 
-  angular
-    .module('users.admin')
-    .controller('UserController', UserController);
+angular.module('users.admin').controller('UserController', ['$scope', '$state', 'Authentication', 'userResolve',
+  function ($scope, $state, Authentication, userResolve) {
+    $scope.authentication = Authentication;
+    $scope.user = userResolve;
 
-  UserController.$inject = ['$scope', '$state', '$window', 'Authentication', 'userResolve'];
-
-  function UserController($scope, $state, $window, Authentication, user) {
-    var vm = this;
-
-    vm.authentication = Authentication;
-    vm.user = user;
-    vm.remove = remove;
-    vm.update = update;
-
-    function remove(user) {
-      if ($window.confirm('Are you sure you want to delete this user?')) {
+    $scope.remove = function (user) {
+      if (confirm('Are you sure you want to delete this user?')) {
         if (user) {
           user.$remove();
 
-          vm.users.splice(vm.users.indexOf(user), 1);
+          $scope.users.splice($scope.users.indexOf(user), 1);
         } else {
-          vm.user.$remove(function () {
+          $scope.user.$remove(function () {
             $state.go('admin.users');
           });
         }
       }
-    }
+    };
 
-    function update(isValid) {
+    $scope.update = function (isValid) {
       if (!isValid) {
-        $scope.$broadcast('show-errors-check-validity', 'vm.userForm');
+        $scope.$broadcast('show-errors-check-validity', 'userForm');
 
         return false;
       }
 
-      var user = vm.user;
+      var user = $scope.user;
 
       user.$update(function () {
         $state.go('admin.user', {
           userId: user._id
         });
       }, function (errorResponse) {
-        vm.error = errorResponse.data.message;
+        $scope.error = errorResponse.data.message;
       });
-    }
+    };
   }
-}());
+]);

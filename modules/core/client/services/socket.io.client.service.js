@@ -1,57 +1,40 @@
-(function () {
-  'use strict';
+'use strict';
 
-  // Create the Socket.io wrapper service
-  angular
-    .module('core')
-    .factory('Socket', Socket);
-
-  Socket.$inject = ['Authentication', '$state', '$timeout'];
-
-  function Socket(Authentication, $state, $timeout) {
-    var service = {
-      connect: connect,
-      emit: emit,
-      on: on,
-      removeListener: removeListener,
-      socket: null
-    };
-
-    connect();
-
-    return service;
-
+// Create the Socket.io wrapper service
+angular.module('core').service('Socket', ['Authentication', '$state', '$timeout',
+  function (Authentication, $state, $timeout) {
     // Connect to Socket.io server
-    function connect() {
+    this.connect = function () {
       // Connect only when authenticated
       if (Authentication.user) {
-        service.socket = io();
+        this.socket = io();
       }
-    }
-
-    // Wrap the Socket.io 'emit' method
-    function emit(eventName, data) {
-      if (service.socket) {
-        service.socket.emit(eventName, data);
-      }
-    }
+    };
+    this.connect();
 
     // Wrap the Socket.io 'on' method
-    function on(eventName, callback) {
-      if (service.socket) {
-        service.socket.on(eventName, function (data) {
+    this.on = function (eventName, callback) {
+      if (this.socket) {
+        this.socket.on(eventName, function (data) {
           $timeout(function () {
             callback(data);
           });
         });
       }
-    }
+    };
+
+    // Wrap the Socket.io 'emit' method
+    this.emit = function (eventName, data) {
+      if (this.socket) {
+        this.socket.emit(eventName, data);
+      }
+    };
 
     // Wrap the Socket.io 'removeListener' method
-    function removeListener(eventName) {
-      if (service.socket) {
-        service.socket.removeListener(eventName);
+    this.removeListener = function (eventName) {
+      if (this.socket) {
+        this.socket.removeListener(eventName);
       }
-    }
+    };
   }
-}());
+]);

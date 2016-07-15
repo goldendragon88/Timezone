@@ -42,7 +42,7 @@
         $location = _$location_;
 
         // Initialize the Authentication controller
-        AuthenticationController = $controller('AuthenticationController as vm', {
+        AuthenticationController = $controller('AuthenticationController', {
           $scope: scope
         });
       }));
@@ -52,11 +52,11 @@
           // Test expected GET request
           $httpBackend.when('POST', '/api/auth/signin').respond(200, 'Fred');
 
-          scope.vm.signin(true);
+          scope.signin(true);
           $httpBackend.flush();
 
           // Test scope value
-          expect(scope.vm.authentication.user).toEqual('Fred');
+          expect(scope.authentication.user).toEqual('Fred');
           expect($location.url()).toEqual('/');
         });
 
@@ -77,7 +77,7 @@
             // Test expected GET request
             $httpBackend.when('POST', '/api/auth/signin').respond(200, 'Fred');
 
-            scope.vm.signin(true);
+            scope.signin(true);
             $httpBackend.flush();
 
             // Test scope value
@@ -92,43 +92,43 @@
             'message': 'Missing credentials'
           });
 
-          scope.vm.signin(true);
+          scope.signin(true);
           $httpBackend.flush();
 
           // Test scope value
-          expect(scope.vm.error).toEqual('Missing credentials');
+          expect(scope.error).toEqual('Missing credentials');
         });
 
         it('should fail to log in with wrong credentials', function () {
           // Foo/Bar combo assumed to not exist
-          scope.vm.authentication.user = 'Foo';
-          scope.vm.credentials = 'Bar';
+          scope.authentication.user = 'Foo';
+          scope.credentials = 'Bar';
 
           // Test expected POST request
           $httpBackend.expectPOST('/api/auth/signin').respond(400, {
             'message': 'Unknown user'
           });
 
-          scope.vm.signin(true);
+          scope.signin(true);
           $httpBackend.flush();
 
           // Test scope value
-          expect(scope.vm.error).toEqual('Unknown user');
+          expect(scope.error).toEqual('Unknown user');
         });
       });
 
       describe('$scope.signup()', function () {
         it('should register with correct data', function () {
           // Test expected GET request
-          scope.vm.authentication.user = 'Fred';
+          scope.authentication.user = 'Fred';
           $httpBackend.when('POST', '/api/auth/signup').respond(200, 'Fred');
 
-          scope.vm.signup(true);
+          scope.signup(true);
           $httpBackend.flush();
 
           // test scope value
-          expect(scope.vm.authentication.user).toBe('Fred');
-          expect(scope.vm.error).toEqual(null);
+          expect(scope.authentication.user).toBe('Fred');
+          expect(scope.error).toEqual(null);
           expect($location.url()).toBe('/');
         });
 
@@ -138,11 +138,11 @@
             'message': 'Username already exists'
           });
 
-          scope.vm.signup(true);
+          scope.signup(true);
           $httpBackend.flush();
 
           // Test scope value
-          expect(scope.vm.error).toBe('Username already exists');
+          expect(scope.error).toBe('Username already exists');
         });
       });
     });
@@ -160,7 +160,7 @@
           roles: ['user']
         };
 
-        AuthenticationController = $controller('AuthenticationController as vm', {
+        AuthenticationController = $controller('AuthenticationController', {
           $scope: scope
         });
       }));

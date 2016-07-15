@@ -2,23 +2,23 @@
 
 (function() {
   describe('Menus', function() {
-    // Initialize global variables
+    //Initialize global variables
     var scope,
-      menuService;
+      Menus;
 
     // Load the main application module
     beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
-    beforeEach(inject(function(_menuService_) {
-      menuService = _menuService_;
+    beforeEach(inject(function(_Menus_) {
+      Menus = _Menus_;
     }));
 
     it('should have topbar added', function() {
-      expect(menuService.menus.topbar).toBeDefined();
+      expect(Menus.menus.topbar).toBeDefined();
     });
 
     it('should have default roles to user and admin', function() {
-      expect(menuService.defaultRoles).toEqual(['user', 'admin']);
+      expect(Menus.defaultRoles).toEqual(['user', 'admin']);
     });
 
     describe('addMenu', function() {
@@ -26,7 +26,7 @@
         var menuId = 'menu1',
           menu;
         beforeEach(function() {
-          menu = menuService.addMenu(menuId);
+          menu = Menus.addMenu(menuId);
         });
 
         it('should return menu object', function() {
@@ -34,7 +34,7 @@
         });
 
         it('should default roles', function() {
-          expect(menu.roles).toEqual(menuService.defaultRoles);
+          expect(menu.roles).toEqual(Menus.defaultRoles);
         });
 
         it('should have empty items', function() {
@@ -53,7 +53,7 @@
             items: ['d', 'e', 'f']
           };
         beforeEach(function() {
-          menu = menuService.addMenu('menu1', options);
+          menu = Menus.addMenu('menu1', options);
         });
 
         it('should set items to options.items list', function() {
@@ -72,7 +72,7 @@
         },
         menu;
       beforeEach(function() {
-        menu = menuService.addMenu('menu1', menuOptions);
+        menu = Menus.addMenu('menu1', menuOptions);
       });
 
       describe('when logged out', function() {
@@ -81,7 +81,7 @@
         });
 
         it('should not render if menu is private', function() {
-          menu = menuService.addMenu('menu1', {
+          menu = Menus.addMenu('menu1', {
             isPublic: false
           });
           expect(menu.shouldRender()).toBeFalsy();
@@ -100,7 +100,7 @@
 
         describe('menu without * role', function() {
           beforeEach(function() {
-            menu = menuService.addMenu('menu1', {
+            menu = Menus.addMenu('menu1', {
               roles: ['b', 'menurole', 'c']
             });
           });
@@ -119,17 +119,17 @@
       });
     });
 
-    describe('validateMenuExistence', function() {
+    describe('validateMenuExistance', function() {
       describe('when menuId not provided', function() {
         it('should throw menuId error', function() {
-          expect(menuService.validateMenuExistence).toThrowError('MenuId was not provided');
+          expect(Menus.validateMenuExistance).toThrowError('MenuId was not provided');
         });
       });
 
       describe('when menu does not exist', function() {
         it('should throw no menu error', function() {
           var target = function() {
-            menuService.validateMenuExistence('noMenuId');
+            Menus.validateMenuExistance('noMenuId');
           };
           expect(target).toThrowError('Menu does not exist');
         });
@@ -138,11 +138,11 @@
       describe('when menu exists', function() {
         var menuId = 'menuId';
         beforeEach(function() {
-          menuService.menus[menuId] = {};
+          Menus.menus[menuId] = {};
         });
 
         it('should return truthy', function() {
-          expect(menuService.validateMenuExistence(menuId)).toBeTruthy();
+          expect(Menus.validateMenuExistance(menuId)).toBeTruthy();
         });
       });
     });
@@ -152,17 +152,17 @@
         id: 'menuId'
       };
       beforeEach(function() {
-        menuService.menus[menu.id] = menu;
-        menuService.validateMenuExistence = jasmine.createSpy();
-        menuService.removeMenu(menu.id);
+        Menus.menus[menu.id] = menu;
+        Menus.validateMenuExistance = jasmine.createSpy();
+        Menus.removeMenu(menu.id);
       });
 
       it('should remove existing menu from menus', function() {
-        expect(menuService.menus).not.toContain(menu.id);
+        expect(Menus.menus).not.toContain(menu.id);
       });
 
       it('validates menu existance before removing', function() {
-        expect(menuService.validateMenuExistence).toHaveBeenCalledWith(menu.id);
+        expect(Menus.validateMenuExistance).toHaveBeenCalledWith(menu.id);
       });
     });
 
@@ -188,17 +188,17 @@
         menuItem;
 
       beforeEach(function() {
-        menuService.validateMenuExistence = jasmine.createSpy();
-        menuService.addSubMenuItem = jasmine.createSpy();
-        menuService.addMenu(menuId, {
+        Menus.validateMenuExistance = jasmine.createSpy();
+        Menus.addSubMenuItem = jasmine.createSpy();
+        Menus.addMenu(menuId, {
           roles: ['a', 'b']
         });
-        menu = menuService.addMenuItem(menuId, menuItemOptions);
+        menu = Menus.addMenuItem(menuId, menuItemOptions);
         menuItem = menu.items[0];
       });
 
       it('should validate menu existance', function() {
-        expect(menuService.validateMenuExistence).toHaveBeenCalledWith(menuId);
+        expect(Menus.validateMenuExistance).toHaveBeenCalledWith(menuId);
       });
 
       it('should return the menu', function() {
@@ -235,14 +235,14 @@
         });
 
         it('should call addSubMenuItem for each item in options', function() {
-          expect(menuService.addSubMenuItem).toHaveBeenCalledWith(menuId, menuItemOptions.state, subMenuItem1);
-          expect(menuService.addSubMenuItem).toHaveBeenCalledWith(menuId, menuItemOptions.state, subMenuItem2);
+          expect(Menus.addSubMenuItem).toHaveBeenCalledWith(menuId, menuItemOptions.state, subMenuItem1);
+          expect(Menus.addSubMenuItem).toHaveBeenCalledWith(menuId, menuItemOptions.state, subMenuItem2);
         });
       });
 
       describe('without options set', function() {
         beforeEach(function() {
-          menu = menuService.addMenuItem(menuId);
+          menu = Menus.addMenuItem(menuId);
           menuItem = menu.items[1];
         });
 
@@ -259,7 +259,7 @@
         });
 
         it('should set menu item roles to default roles', function() {
-          expect(menuItem.roles).toEqual(menuService.defaultRoles);
+          expect(menuItem.roles).toEqual(Menus.defaultRoles);
         });
 
         it('should set menu item position to 0', function() {
@@ -275,11 +275,11 @@
         menu;
 
       beforeEach(function() {
-        menuService.addMenu(menuId);
-        menuService.addMenuItem(menuId, { state: menuItemState });
-        menuService.addMenuItem(menuId, { state: menuItemState2 });
-        menuService.validateMenuExistence = jasmine.createSpy();
-        menu = menuService.removeMenuItem(menuId, menuItemState);
+        Menus.addMenu(menuId);
+        Menus.addMenuItem(menuId, { state: menuItemState });
+        Menus.addMenuItem(menuId, { state: menuItemState2 });
+        Menus.validateMenuExistance = jasmine.createSpy();
+        menu = Menus.removeMenuItem(menuId, menuItemState);
       });
 
       it('should return menu object', function() {
@@ -287,7 +287,7 @@
       });
 
       it('should validate menu existance', function() {
-        expect(menuService.validateMenuExistence).toHaveBeenCalledWith(menuId);
+        expect(Menus.validateMenuExistance).toHaveBeenCalledWith(menuId);
       });
 
       it('should remove sub menu items with same state', function() {
@@ -324,13 +324,13 @@
         menu;
 
       beforeEach(function() {
-        menuService.validateMenuExistence = jasmine.createSpy();
-        menuService.addMenu(menuId);
-        menuService.addMenuItem(menuId, menuItem1Options);
-        menuService.addMenuItem(menuId, menuItem2Options);
-        menuService.addMenuItem(menuId, { state: 'something.else' });
-        menuService.addSubMenuItem(menuId, menuItem1Options.state, subItemOptions);
-        menu = menuService.addSubMenuItem(menuId, menuItem1Options.state);
+        Menus.validateMenuExistance = jasmine.createSpy();
+        Menus.addMenu(menuId);
+        Menus.addMenuItem(menuId, menuItem1Options);
+        Menus.addMenuItem(menuId, menuItem2Options);
+        Menus.addMenuItem(menuId, { state: 'something.else' });
+        Menus.addSubMenuItem(menuId, menuItem1Options.state, subItemOptions);
+        menu = Menus.addSubMenuItem(menuId, menuItem1Options.state);
         menuItem1 = menu.items[0];
         menuItem2 = menu.items[1];
         menuItem3 = menu.items[2];
@@ -339,7 +339,7 @@
       });
 
       afterEach(function() {
-        menuService.removeMenu(menuId);
+        Menus.removeMenu(menuId);
       });
 
       it('should return menu object', function() {
@@ -347,7 +347,7 @@
       });
 
       it('should validate menu existance', function() {
-        expect(menuService.validateMenuExistence).toHaveBeenCalledWith(menuId);
+        expect(Menus.validateMenuExistance).toHaveBeenCalledWith(menuId);
       });
 
       it('should not add sub menu item to menu item of different state', function() {
@@ -405,21 +405,21 @@
           expect(subItem2.position).toBe(0);
         });
       });
-
+      
       describe('then removeSubMenuItem', function() {
         beforeEach(function() {
-          menuService.validateMenuExistence = jasmine.createSpy();
-          menu = menuService.removeSubMenuItem(menuId, subItem1.state);
+          Menus.validateMenuExistance = jasmine.createSpy();
+          menu = Menus.removeSubMenuItem(menuId, subItem1.state);
         });
-
+  
         it('should validate menu existance', function() {
-          expect(menuService.validateMenuExistence).toHaveBeenCalledWith(menuId);
+          expect(Menus.validateMenuExistance).toHaveBeenCalledWith(menuId);
         });
-
+  
         it('should return menu object', function() {
           expect(menu).toBeDefined();
         });
-
+  
         it('should remove sub menu item', function() {
           expect(menuItem1.items.length).toBe(1);
           expect(menuItem1.items[0].state).toEqual(subItem2.state);
@@ -427,4 +427,4 @@
       });
     });
   });
-}());
+})();

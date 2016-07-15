@@ -2,7 +2,7 @@
 
 (function () {
   describe('HomeController', function () {
-    // Initialize global variables
+    //Initialize global variables
     var scope,
       HomeController;
 
@@ -12,9 +12,13 @@
     beforeEach(inject(function ($controller, $rootScope) {
       scope = $rootScope.$new();
 
-      HomeController = $controller('HomeController as vm', {
+      HomeController = $controller('HomeController', {
         $scope: scope
       });
     }));
+
+    it('should expose the authentication service', function () {
+      expect(scope.authentication).toBeTruthy();
+    });
   });
-}());
+})();

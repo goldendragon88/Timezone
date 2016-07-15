@@ -1,0 +1,32 @@
+<section>
+  <div class="page-header">
+    <h1>Timezones</h1>
+  </div>
+  <div class="bar">
+      <!-- Create a binding between the searchString model and the text field -->
+    <input type="text" ng-model="vm.searchString" placeholder="Enter timezone name to search" />
+  </div>
+  <div class="list-group">
+    <a data-ng-repeat="timezone in vm.timezones | searchFor:vm.searchString"
+       data-ui-sref="timezones.view({ timezoneId: timezone._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span data-ng-bind="timezone.created | date:'mediumDate'"></span>
+        by
+        <span data-ng-if="timezone.user" data-ng-bind="timezone.user.displayName"></span>
+        <span data-ng-if="!timezone.user">Deleted User</span>
+      </small>
+      <!-- <h4 class="list-group-item-heading" ng-if="timezone.difference >= 0">{{timezone.name}} - {{timezone.city}} GMT+{{timezone.difference}}</h4> -->
+      <!-- <h4 class="list-group-item-heading" ng-if="timezone.difference < 0">{{timezone.name}} - {{timezone.city}} GMT{{timezone.difference}}</h4> -->
+      <!-- <h5>Time : {{ vm.dateTimeNow | toUserTimezone : "dddd, MMMM Do YYYY, HH:mm:ss" : timezone.difference }} </h5> -->
+      <div class=" text-center">
+        <h4 class="list-group-item-heading">{{timezone.name}} - {{timezone.city}}</h4>
+        <ds-widget-clock show-digital digital-format="format" gmt-offset="timezone.difference" show-gmt-info></ds-widget-clock>
+      </div>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" data-ng-if="vm.timezones.$resolved && !vm.timezones.length">
+    No Timezones yet, why don't you <a data-ui-sref="timezones.create">create one</a>?
+  </div>
+</section>

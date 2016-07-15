@@ -2,13 +2,12 @@
 
 module.exports = {
   app: {
-    title: 'MEAN.JS',
+    title: 'Timezone',
     description: 'Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js',
     keywords: 'mongodb, express, angularjs, node.js, mongoose, passport',
     googleAnalyticsTrackingID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID'
   },
   port: process.env.PORT || 3000,
-  host: process.env.HOST || '0.0.0.0',
   templateEngine: 'swig',
   // Session Cookie settings
   sessionCookie: {
@@ -28,21 +27,13 @@ module.exports = {
   // for obsecurity reasons
   sessionKey: 'sessionId',
   sessionCollection: 'sessions',
-  // Lusca config
-  csrf: {
-    csrf: false,
-    csp: { /* Content Security Policy object */},
-    xframe: 'SAMEORIGIN',
-    p3p: 'ABCDEF',
-    xssProtection: true
-  },
   logo: 'modules/core/client/img/brand/logo.png',
   favicon: 'modules/core/client/img/brand/favicon.ico',
   uploads: {
     profileUpload: {
       dest: './modules/users/client/img/profile/uploads/', // Profile upload destination path
       limits: {
-        fileSize: 1 * 1024 * 1024 // Max file size in bytes (1 MB)
+        fileSize: 1*1024*1024 // Max file size in bytes (1 MB)
       }
     }
   }

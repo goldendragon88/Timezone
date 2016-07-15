@@ -1,33 +1,26 @@
-(function () {
-  'use strict';
+'use strict';
 
-  angular
-    .module('users')
-    .controller('SocialAccountsController', SocialAccountsController);
-
-  SocialAccountsController.$inject = ['$scope', '$http', 'Authentication'];
-
-  function SocialAccountsController($scope, $http, Authentication) {
-    var vm = this;
-
-    vm.user = Authentication.user;
-    vm.hasConnectedAdditionalSocialAccounts = hasConnectedAdditionalSocialAccounts;
-    vm.isConnectedSocialAccount = isConnectedSocialAccount;
-    vm.removeUserSocialAccount = removeUserSocialAccount;
+angular.module('users').controller('SocialAccountsController', ['$scope', '$http', 'Authentication',
+  function ($scope, $http, Authentication) {
+    $scope.user = Authentication.user;
 
     // Check if there are additional accounts
-    function hasConnectedAdditionalSocialAccounts() {
-      return (vm.user.additionalProvidersData && Object.keys(vm.user.additionalProvidersData).length);
-    }
+    $scope.hasConnectedAdditionalSocialAccounts = function (provider) {
+      for (var i in $scope.user.additionalProvidersData) {
+        return true;
+      }
+
+      return false;
+    };
 
     // Check if provider is already in use with current user
-    function isConnectedSocialAccount(provider) {
-      return vm.user.provider === provider || (vm.user.additionalProvidersData && vm.user.additionalProvidersData[provider]);
-    }
+    $scope.isConnectedSocialAccount = function (provider) {
+      return $scope.user.provider === provider || ($scope.user.additionalProvidersData && $scope.user.additionalProvidersData[provider]);
+    };
 
     // Remove a user social account
-    function removeUserSocialAccount(provider) {
-      vm.success = vm.error = null;
+    $scope.removeUserSocialAccount = function (provider) {
+      $scope.success = $scope.error = null;
 
       $http.delete('/api/users/accounts', {
         params: {
@@ -35,11 +28,11 @@
         }
       }).success(function (response) {
         // If successful show success message and clear form
-        vm.success = true;
-        vm.user = Authentication.user = response;
+        $scope.success = true;
+        $scope.user = Authentication.user = response;
       }).error(function (response) {
-        vm.error = response.message;
+        $scope.error = response.message;
       });
-    }
+    };
   }
-}());
+]);

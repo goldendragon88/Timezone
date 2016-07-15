@@ -1,38 +1,29 @@
-(function () {
-  'use strict';
+'use strict';
 
-  angular
-    .module('users')
-    .controller('EditProfileController', EditProfileController);
-
-  EditProfileController.$inject = ['$scope', '$http', '$location', 'UsersService', 'Authentication'];
-
-  function EditProfileController($scope, $http, $location, UsersService, Authentication) {
-    var vm = this;
-
-    vm.user = Authentication.user;
-    vm.updateUserProfile = updateUserProfile;
+angular.module('users').controller('EditProfileController', ['$scope', '$http', '$location', 'Users', 'Authentication',
+  function ($scope, $http, $location, Users, Authentication) {
+    $scope.user = Authentication.user;
 
     // Update a user profile
-    function updateUserProfile(isValid) {
-      vm.success = vm.error = null;
+    $scope.updateUserProfile = function (isValid) {
+      $scope.success = $scope.error = null;
 
       if (!isValid) {
-        $scope.$broadcast('show-errors-check-validity', 'vm.userForm');
+        $scope.$broadcast('show-errors-check-validity', 'userForm');
 
         return false;
       }
 
-      var user = new UsersService(vm.user);
+      var user = new Users($scope.user);
 
       user.$update(function (response) {
-        $scope.$broadcast('show-errors-reset', 'vm.userForm');
+        $scope.$broadcast('show-errors-reset', 'userForm');
 
-        vm.success = true;
+        $scope.success = true;
         Authentication.user = response;
       }, function (response) {
-        vm.error = response.data.message;
+        $scope.error = response.data.message;
       });
-    }
+    };
   }
-}());
+]);

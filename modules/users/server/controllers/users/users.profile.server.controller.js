@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Module dependencies
+ * Module dependencies.
  */
 var _ = require('lodash'),
   fs = require('fs'),
@@ -21,9 +21,6 @@ exports.update = function (req, res) {
 
   // For security measurement we remove the roles from the req.body object
   delete req.body.roles;
-
-  // For security measurement do not use _id from the req.body object
-  delete req.body._id;
 
   if (user) {
     // Merge existing user
@@ -58,15 +55,16 @@ exports.update = function (req, res) {
  */
 exports.changeProfilePicture = function (req, res) {
   var user = req.user;
+  var message = null;
   var upload = multer(config.uploads.profileUpload).single('newProfilePicture');
   var profileUploadFileFilter = require(path.resolve('./config/lib/multer')).profileUploadFileFilter;
-
+  
   // Filtering to upload only images
   upload.fileFilter = profileUploadFileFilter;
 
   if (user) {
     upload(req, res, function (uploadError) {
-      if (uploadError) {
+      if(uploadError) {
         return res.status(400).send({
           message: 'Error occurred while uploading profile picture'
         });

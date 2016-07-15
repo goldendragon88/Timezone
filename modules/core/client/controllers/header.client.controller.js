@@ -1,25 +1,23 @@
-(function () {
-  'use strict';
+'use strict';
 
-  angular
-    .module('core')
-    .controller('HeaderController', HeaderController);
+angular.module('core').controller('HeaderController', ['$scope', '$state', 'Authentication', 'Menus',
+  function ($scope, $state, Authentication, Menus) {
+    // Expose view variables
+    $scope.$state = $state;
+    $scope.authentication = Authentication;
 
-  HeaderController.$inject = ['$scope', '$state', 'Authentication', 'menuService'];
+    // Get the topbar menu
+    $scope.menu = Menus.getMenu('topbar');
 
-  function HeaderController($scope, $state, Authentication, menuService) {
-    var vm = this;
+    // Toggle the menu items
+    $scope.isCollapsed = false;
+    $scope.toggleCollapsibleMenu = function () {
+      $scope.isCollapsed = !$scope.isCollapsed;
+    };
 
-    vm.accountMenu = menuService.getMenu('account').items[0];
-    vm.authentication = Authentication;
-    vm.isCollapsed = false;
-    vm.menu = menuService.getMenu('topbar');
-
-    $scope.$on('$stateChangeSuccess', stateChangeSuccess);
-
-    function stateChangeSuccess() {
-      // Collapsing the menu after navigation
-      vm.isCollapsed = false;
-    }
+    // Collapsing the menu after navigation
+    $scope.$on('$stateChangeSuccess', function () {
+      $scope.isCollapsed = false;
+    });
   }
-}());
+]);

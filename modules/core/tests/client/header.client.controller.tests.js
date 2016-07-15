@@ -2,7 +2,7 @@
 
 (function () {
   describe('HeaderController', function () {
-    // Initialize global variables
+    //Initialize global variables
     var scope,
       HeaderController,
       $state,
@@ -16,46 +16,49 @@
       $state = _$state_;
       Authentication = _Authentication_;
 
-      HeaderController = $controller('HeaderController as vm', {
+      HeaderController = $controller('HeaderController', {
         $scope: scope
       });
     }));
 
     it('should expose the authentication service', function () {
-      expect(scope.vm.authentication).toBe(Authentication);
+      expect(scope.authentication).toBe(Authentication);
+    });
+
+    it('should expose the $state service', function () {
+      expect(scope.$state).toBe($state);
     });
 
     it('should default menu to collapsed', function () {
-      expect(scope.vm.isCollapsed).toBeFalsy();
+      expect(scope.isCollapsed).toBeFalsy();
     });
 
     describe('when toggleCollapsibleMenu', function () {
       var defaultCollapse;
       beforeEach(function () {
-        defaultCollapse = scope.vm.isCollapsed;
-
-        scope.vm.isCollapsed = !scope.vm.isCollapsed;
+        defaultCollapse = scope.isCollapsed;
+        scope.toggleCollapsibleMenu();
       });
 
       it('should toggle isCollapsed to non default value', function () {
-        expect(scope.vm.isCollapsed).not.toBe(defaultCollapse);
+        expect(scope.isCollapsed).not.toBe(defaultCollapse);
       });
 
       it('should then toggle isCollapsed back to default value', function () {
-        scope.vm.isCollapsed = !scope.vm.isCollapsed;
-        expect(scope.vm.isCollapsed).toBe(defaultCollapse);
+        scope.toggleCollapsibleMenu();
+        expect(scope.isCollapsed).toBe(defaultCollapse);
       });
     });
 
     describe('when view state changes', function () {
       beforeEach(function () {
-        scope.vm.isCollapsed = true;
+        scope.isCollapsed = true;
         scope.$broadcast('$stateChangeSuccess');
       });
 
       it('should set isCollapsed to false', function () {
-        expect(scope.vm.isCollapsed).toBeFalsy();
+        expect(scope.isCollapsed).toBeFalsy();
       });
     });
   });
-}());
+})();

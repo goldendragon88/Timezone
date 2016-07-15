@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Module dependencies
+ * Module dependencies.
  */
 var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
@@ -20,10 +20,13 @@ var noReturnUrls = [
  */
 exports.signup = function (req, res) {
   // For security measurement we remove the roles from the req.body object
-  delete req.body.roles;
+  // delete req.body.roles;
 
-  // Init user and add missing fields
+  // Init Variables
   var user = new User(req.body);
+  var message = null;
+
+  // Add missing user fields
   user.provider = 'local';
   user.displayName = user.firstName + ' ' + user.lastName;
 
@@ -104,7 +107,7 @@ exports.oauthCallback = function (strategy) {
     var sessionRedirectURL = req.session.redirect_to;
     delete req.session.redirect_to;
 
-    passport.authenticate(strategy, function (err, user, info) {
+    passport.authenticate(strategy, function (err, user, redirectURL) {
       if (err) {
         return res.redirect('/authentication/signin?err=' + encodeURIComponent(errorHandler.getErrorMessage(err)));
       }
@@ -116,7 +119,7 @@ exports.oauthCallback = function (strategy) {
           return res.redirect('/authentication/signin');
         }
 
-        return res.redirect(info || sessionRedirectURL || '/');
+        return res.redirect(redirectURL || sessionRedirectURL || '/');
       });
     })(req, res, next);
   };

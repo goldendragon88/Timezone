@@ -1,0 +1,32 @@
+<section>
+  <div class="page-header">
+    <h2><label>Name:</label> <label data-ng-bind="vm.timezone.name"></label></h2>
+    <!-- <div><label>City:</label> <label data-ng-bind="vm.timezone.city"></label></div> -->
+    <!-- <div><label>GMT</label> <label ng-if="vm.timezone.difference >= 0">+</label>{{vm.timezone.difference}}</div> -->
+    <p class="lead">City: {{vm.timezone.city}}</p>
+    <div class="text-center">
+      <ds-widget-clock show-digital digital-format="format" gmt-offset="vm.timezone.difference" show-gmt-info></ds-widget-clock>
+    </div>
+  </div>
+  <div class="pull-right"
+       data-ng-show="vm.timezone.isCurrentUserOwner">
+    <a class="btn btn-primary"
+       data-ui-sref="timezones.edit({ timezoneId: vm.timezone._id })">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn btn-primary" data-ng-click="vm.remove()">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <small>
+    <em class="text-muted">
+      Posted on
+      <span data-ng-bind="vm.timezone.created | date:'mediumDate'"></span>
+      by
+      <span data-ng-if="vm.timezone.user"
+            data-ng-bind="vm.timezone.user.displayName"></span>
+      <span data-ng-if="!vm.timezone.user">Deleted User</span>
+    </em>
+  </small>
+  
+</section>

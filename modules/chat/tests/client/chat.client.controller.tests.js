@@ -1,52 +1,52 @@
+'use strict';
+
 /**
  * Chat client controller tests
  */
 (function () {
-  'use strict';
-
   describe('ChatController', function () {
-    // Initialize global variables
-    var $scope,
+    //Initialize global variables
+    var scope,
       Socket,
       ChatController,
       $timeout,
-      $state,
+      $location,
       Authentication;
 
     // Load the main application module
     beforeEach(module(ApplicationConfiguration.applicationModuleName));
 
-    beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$state_) {
-      $scope = $rootScope.$new();
+    beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$location_) {
+      scope = $rootScope.$new();
       Socket = _Socket_;
       $timeout = _$timeout_;
-      $state = _$state_;
+      $location = _$location_;
       Authentication = _Authentication_;
     }));
 
     describe('when user logged out', function () {
-      beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$state_) {
+      beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$location_) {
         Authentication.user = undefined;
-        spyOn($state, 'go');
-        ChatController = $controller('ChatController as vm', {
-          $scope: $scope
+        spyOn($location, 'path');
+        ChatController = $controller('ChatController', {
+          $scope: scope,
         });
       }));
 
       it('should redirect logged out user to /', function () {
-        expect($state.go).toHaveBeenCalledWith('home');
+        expect($location.path).toHaveBeenCalledWith('/');
       });
     });
 
     describe('when user logged in', function () {
-      beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$state_) {
+      beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$location_) {
         Authentication.user = {
           name: 'user',
           roles: ['user']
         };
 
-        ChatController = $controller('ChatController as vm', {
-          $scope: $scope
+        ChatController = $controller('ChatController', {
+          $scope: scope,
         });
       }));
 
@@ -55,34 +55,34 @@
       });
 
       it('should define messages array', function () {
-        expect($scope.vm.messages).toBeDefined();
-        expect($scope.vm.messages.length).toBe(0);
+        expect(scope.messages).toBeDefined();
+        expect(scope.messages.length).toBe(0);
       });
 
       describe('sendMessage', function () {
         var text = 'hello world!';
         beforeEach(function () {
-          $scope.vm.messageText = text;
-          $scope.vm.sendMessage();
+          scope.messageText = text;
+          scope.sendMessage();
           $timeout.flush();
         });
 
         it('should add message to messages', function () {
-          expect($scope.vm.messages.length).toBe(1);
+          expect(scope.messages.length).toBe(1);
         });
 
         it('should add message with proper text attribute set', function () {
-          expect($scope.vm.messages[0].text).toBe(text);
+          expect(scope.messages[0].text).toBe(text);
         });
 
         it('should clear messageText', function () {
-          expect($scope.vm.messageText).toBe('');
+          expect(scope.messageText).toBe('');
         });
       });
 
       describe('$destroy()', function () {
         beforeEach(function () {
-          $scope.$destroy();
+          scope.$destroy();
         });
 
         it('should remove chatMessage listener', function () {
